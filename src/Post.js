@@ -5,11 +5,15 @@ import {
   ShareOutlined,
   ThumbUpOutlined,
 } from "@material-ui/icons";
-import React from "react";
+import React, { forwardRef } from "react";
+import { selectUser } from "./features/userSlice";
 import InputOption from "./InputOption";
 import "./Post.css";
+import { useSelector } from "react-redux";
 
-function Post({ name, description, message, photoUrl }) {
+const Post = forwardRef(({ name, description, message, photoUrl }, ref) => {
+  const user = useSelector(selectUser);
+
   return (
     <div className="post">
       <div className="post__header">
@@ -47,6 +51,6 @@ function Post({ name, description, message, photoUrl }) {
       </div>
     </div>
   );
-}
+});
 
 export default Post;

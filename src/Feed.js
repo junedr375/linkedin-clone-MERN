@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Feed.css";
 import CreateIcon from "@material-ui/icons/Create";
 import ImageIcon from "@material-ui/icons/Image";
@@ -8,12 +8,39 @@ import CalendarViewDayIcon from "@material-ui/icons/CalendarViewDay";
 
 import InputOption from "./InputOption";
 import Post from "./Post";
+import { db } from "./firebase";
+import firebase from "firebase";
+import { selectUser } from "./features/userSlice";
+import { useSelector } from "react-redux";
 
 function Feed() {
+  const user = useSelector(selectUser);
+  const [input, setInput] = useState("");
   const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    db.collection("posts")
+      .orderBy("timestamp", "desc")
+      .onSnapshot((snapshot) =>
+        setPosts(
+          snapshot.docs.map((doc) => ({
+            id: doc.id,
+            data: doc.data(),
+          }))
+        )
+      );
+  }, []);
 
   const sendPost = (e) => {
     e.preventDefault();
+    db.collection("posts").add({
+      name: user.displayName,
+      description: user.email,
+      message: input,
+      photoUrl: user.photoUrl || "",
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    setInput("");
   };
 
   return (
@@ -22,7 +49,11 @@ function Feed() {
         <div className="feed__input">
           <CreateIcon></CreateIcon>
           <form>
-            <input type="text"></input>
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              type="text"
+            ></input>
             <button onClick={sendPost} type="submit">
               Send
             </button>
@@ -53,15 +84,15 @@ function Feed() {
         </div>
       </div>
 
-      <Post
-        name="junedr375"
-        description="flutter and MERN Developer"
-        message="     Message goes herer Lorem ipsum, dolor sit amet consectetur adipisicing
-      elit. Adipisci, magni a doloribus ad dolor quaerat sunt temporibus
-      sint, dolores corporis nam pariatur officiis cumque est enim
-      praesentium quod velit eveniet."
-        photoUrl="https://avatars2.githubusercontent.com/u/49837673?s=460&u=367d06d74dfaac2be14becdc37ffa922808c3827&v=4"
-      ></Post>
+      {posts.map(({ id, data: { name, description, message, photoUrl } }) => (
+        <Post
+          key={id}
+          name={name}
+          description={description}
+          message={message}
+          photoUrl={photoUrl}
+        ></Post>
+      ))}
     </div>
   );
 }
