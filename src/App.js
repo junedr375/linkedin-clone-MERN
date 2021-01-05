@@ -17,20 +17,34 @@ function App() {
 
   useEffect(() => {
     auth.onAuthStateChanged((userAuth) => {
-      if (userAuth) {
-        //user logged in
+      const authUser = auth.currentUser;
+
+      if (authUser) {
         dispatch(
           login({
-            email: userAuth.user.email,
-            uid: userAuth.user.uid,
-            displayName: userAuth.user.displayName,
-            photoUrl: userAuth.photoURL,
+            email: authUser.email,
+            uid: authUser.uid,
+            displayName: authUser.displayName,
+            photoUrl: authUser.photoURL,
           })
         );
       } else {
-        //user Logged out
         dispatch(logout());
       }
+      // if (userAuth) {
+      //   //user logged in
+      //   dispatch(
+      //     login({
+      //       email: userAuth.user.email,
+      //       uid: userAuth.user.uid,
+      //       displayName: userAuth.user.displayName,
+      //       photoUrl: userAuth.photoURL,
+      //     })
+      //   );
+      // } else {
+      //   //user Logged out
+      //   dispatch(logout());
+      // }
     });
   }, []);
 
