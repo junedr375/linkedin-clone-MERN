@@ -8,6 +8,7 @@ import { auth } from "./firebase";
 import Header from "./Header";
 import Login from "./Login";
 import Sidebar from "./Sidebar";
+import Widget from "./Widgets";
 
 function App() {
   const user = useSelector(selectUser);
@@ -43,6 +44,7 @@ function App() {
         <div className="app__body">
           <Sidebar></Sidebar>
           <Feed></Feed>
+          <Widget></Widget>
         </div>
       )}
     </div>

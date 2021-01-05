@@ -15,7 +15,7 @@ const Post = forwardRef(({ name, description, message, photoUrl }, ref) => {
   const user = useSelector(selectUser);
 
   return (
-    <div className="post">
+    <div ref={ref} className="post">
       <div className="post__header">
         <Avatar src={photoUrl}> </Avatar>
         <div className="post__info">
